@@ -3,45 +3,56 @@ const router = express.Router()
 const db = require('../models')
 const Record = db.Record
 const User = db.User
-
+const months = require('../data/date.json').results
+const categorys = require('../data/category.json').results
 const { authenticated } = require('../config/auth.js')
+const sequelize = require('sequelize')
+const Op = sequelize.Op
 
 router.get('/', authenticated, (req, res) => {
-  // 月份選單
-  const monthsHash = {
-    '':'全部',
-    '1':'一月',
-    '2':'二月',
-    '3':'三月',
-    '4':'四月',
-    '5':'五月',
-    '6':'六月',
-    '7':'七月',
-    '8':'八月',
-    '9':'九月',
-    '10':'十月',
-    '11':'十一月',
-    '12':'十二月'
+  const month = req.query.months || ''
+  const category = req.query.categorys || ''
+  let filter = {}
+
+  if (month === '' && category === '') {
+    filter = {
+      UserId: req.user.id
+    }
+  } else if (month === '') {
+    filter = {
+      UserId: req.user.id,
+      category: category
+    }
+  } else if (category === '') {
+    filter = {
+      UserId: req.user.id,
+      [Op.and]: [
+        sequelize.where(sequelize.fn('MONTH', sequelize.col('date')), parseInt(month))
+      ]
+    }
+  } else {
+    filter = {
+      UserId: req.user.id,
+      category: category,
+      [Op.and]: [
+        sequelize.where(sequelize.fn('MONTH', sequelize.col('date')), parseInt(month))
+      ]
+    }
   }
-  // 分類選單
-  const categorysHash = {
-    '':'全部',
-    'living': '家居物業',
-    'traffic': '交通出行',
-    'recreation': '休閒娛樂',
-    'food': '餐飲食品',
-    'other': '其他',
-  }
-  
+
   User.findByPk(req.user.id)
   .then(user => {
     if (!user) throw new Error('user not found')
 
     return Record.findAll({
-      where: {userId: req.user.id}
+      where: filter
     })
   })
-  .then(records => { return res.render('index',{records, monthsHash, categorysHash}) })
+  .then(records => {
+    
+    let totalAmount = records.map(record => record.amount).reduce((accumulator, currentValue) => accumulator + currentValue, 0)
+    return res.render('index',{records, months, month, categorys, category, totalAmount})
+  })
   .catch(err => { return res.status(422).json(err) })
 })
 

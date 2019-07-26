@@ -1,0 +1,28 @@
+{
+  "results": [
+    {
+      "name": "全部",
+      "category": ""
+    },
+    {
+      "name": "家居物業",
+      "category": "living"
+    },
+    {
+      "name": "交通出行",
+      "category": "traffic"
+    },
+    {
+      "name": "休閒娛樂",
+      "category": "recreation"
+    },
+    {
+      "name": "餐飲食品",
+      "category": "food"
+    },
+    {
+      "name": "其他",
+      "category": "other"
+    }
+  ]
+}

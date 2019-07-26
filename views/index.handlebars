@@ -3,18 +3,18 @@
     <div class="dropdown  mr-2">
       <button class="btn btn-success dropdown-toggle" id="monthsDropdown" data-toggle="dropdown">月份</button>
       <div class="dropdown-menu" aria-labelledby="monthsDropdown">
-        {{#each monthsHash}}
-        <a href="/?months={{@key}}&categorys={{../categorys}}"
-          class="dropdown-item" aria-labelledby="months">{{this}}</a>
+        {{#each months}}
+        <a href="/?months={{this.month}}&categorys={{../category}}"
+          class="dropdown-item" aria-labelledby="months">{{this.name}}</a>
         {{/each}}
       </div>
     </div>
     <div class="dropdown  mr-2">
       <button class="btn btn-success dropdown-toggle" id="categoryDropdown" data-toggle="dropdown">分類</button>
       <div class="dropdown-menu" aria-labelledby="categoryDropdown">
-        {{#each categorysHash}}
-        <a href="/?categorys={{@key}}&months={{../months}}"
-          class="dropdown-item">{{this}}</a>
+        {{#each categorys}}
+        <a href="/?categorys={{this.category}}&months={{../month}}"
+          class="dropdown-item">{{this.name}}</a>
         {{/each}}
       </div>
     </div>
@@ -42,7 +42,7 @@
         </div>
         <div class="col-2 d-flex justify-content-end align-items-center trackEdit">
           <a href="record/{{ this.id }}/edit" class="btn btn-info mr-1">編輯</a>
-          <form action="/record/{{ this.id }}/delete?_method=DELETE" method="post" class="d-inline">
+          <form action="/record/{{this.id}}/delete?_method=DELETE" method="post" class="d-inline">
             <button type="submit" class="btn btn-danger">刪除</button>
           </form>
         </div>
