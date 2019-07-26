@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>家庭記帳本</title>
+  <!-- stylesheets -->
+  <link href="https://fonts.googleapis.com/css?family=Noto+Sans+TC&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/stylesheets/bootstrap.css">
+  <link rel="stylesheet" href="/stylesheets/login.css">
+  <link rel="stylesheet" href="/stylesheets/main.css">
+  <!-- font awesome-->
+  <script src="https://kit.fontawesome.com/913ecd4b10.js"></script>
+</head>
+
+<body>
+  <nav class="navbar navbar-light bg-light">
+    <a href="/" class="navbar-brand">家庭記帳本</a>
+    <div class="navbar-right">
+      {{#if isAuthenticated}}
+        <a href="/users/logout" class="btn btn-outline-info">LOGOUT</a>
+      {{/if}}
+    </div>
+  </nav>
+  <!-- display template-->
+  {{{body}}}
+  <!-- script -->
+  <script src="/javascripts/jquery-3.3.1.js"></script>
+  <script src="/javascripts/popper.min.js"></script>
+  <script src="/javascripts/bootstrap.js"></script>
+
+</body>
+</html>

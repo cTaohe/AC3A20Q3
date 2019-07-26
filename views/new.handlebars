@@ -1,0 +1,47 @@
+<div class="row mt-5">
+  <form action="/record/new" method="POST" class="m-auto col-6  bg-light rounded">
+    <div class="row">
+      <span class="text-danger col-2 text-right">*必填欄位</span>
+      <h1 class="d-inline-block col-8 text-center">請輸入你的支出</h1>
+    </div>
+    <!-- name -->
+    <div class="form-group row">
+      <label for="name" class="col-2 text-right">名稱<span class="text-danger">*</span>:</label>
+      <div class="col-8">
+        <input type="text" class="form-control" name="name" id="name" required>
+      </div>
+    </div>
+    <!-- date -->
+    <div class="form-group row">
+      <label for="date" class="col-2 text-right">日期<span class="text-danger">*</span>:</label>
+      <div class="col-8">
+        <input type="date" class="form-control" name="date" id="date" required>
+      </div>
+    </div>
+    <!-- category -->
+    <div class="form-group row">
+      <label for="category" class="col-2 text-right">類別<span class="text-danger">*</span>:</label>
+      <div class="col-8">
+        <select name="category" class="form-control" id="category" required>
+          <option value="" selected>類別</option>
+          <option value="living">家居物業</option>
+          <option value="traffic">交通出行</option>
+          <option value="recreation">休閒娛樂</option>
+          <option value="food">餐飲食品</option>
+          <option value="other">其他</option>
+        </select>
+      </div>
+    </div>
+    <!-- amount -->
+    <div class="form-group row">
+      <label for="amount" class="col-2 text-right">金額<span class="text-danger">*</span>:</label>
+      <div class="col-8">
+        <input type="number" class="form-control" name="amount" id="amount" required>
+      </div>
+    </div>
+    <!-- button -->
+    <div class="form-group text-center">
+      <button class="btn btn-primary">新增支出</button>
+    </div>
+  </form>
+</div>

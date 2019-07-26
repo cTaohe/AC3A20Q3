@@ -1,0 +1,53 @@
+<div class="container">
+  <div class="row m-5 justify-content-center">
+    <div class="dropdown  mr-2">
+      <button class="btn btn-success dropdown-toggle" id="monthsDropdown" data-toggle="dropdown">月份</button>
+      <div class="dropdown-menu" aria-labelledby="monthsDropdown">
+        {{#each monthsHash}}
+        <a href="/?months={{@key}}&categorys={{../categorys}}"
+          class="dropdown-item" aria-labelledby="months">{{this}}</a>
+        {{/each}}
+      </div>
+    </div>
+    <div class="dropdown  mr-2">
+      <button class="btn btn-success dropdown-toggle" id="categoryDropdown" data-toggle="dropdown">分類</button>
+      <div class="dropdown-menu" aria-labelledby="categoryDropdown">
+        {{#each categorysHash}}
+        <a href="/?categorys={{@key}}&months={{../months}}"
+          class="dropdown-item">{{this}}</a>
+        {{/each}}
+      </div>
+    </div>
+    <a href="/record/new" class="btn btn-success">新增</a>
+  </div>
+  <div class="m-5">
+    <div class="row text-warning">
+        <h5 class="col-5 text-right">總金額:</h5>
+        <h1 class="col-7 display-4">{{totalAmount}}</h1>
+    </div>
+  </div>
+  <ul class="list-group">
+    {{#each records}}
+    <li class="list-group-item border-0">
+      <div class="row">
+        <div class="col row">
+          <div class="col-2 display-4 mx-3">
+            {{#categoryIcon this.category}}{{/categoryIcon}}
+          </div>
+          <div class="itemsName mr-auto">
+            <h3>{{ this.name }}</h3>
+            <p>{{ pickedDate this.date }}</p>
+          </div>
+          <div class="text-center my-auto">{{ this.amount }}</div>
+        </div>
+        <div class="col-2 d-flex justify-content-end align-items-center trackEdit">
+          <a href="record/{{ this.id }}/edit" class="btn btn-info mr-1">編輯</a>
+          <form action="/record/{{ this.id }}/delete?_method=DELETE" method="post" class="d-inline">
+            <button type="submit" class="btn btn-danger">刪除</button>
+          </form>
+        </div>
+      </div>
+    </li>
+    {{/each}}
+  </ul>
+</div>
