@@ -12,6 +12,10 @@ const flash = require('connect-flash')
 const session = require('express-session')
 const passport = require('passport')
 
+if(process.env.NODE_ENV !== 'production') {
+  require('dotenv').config()
+}
+
 // template engine
 app.engine('handlebars', exphbs({ defaultLayout: 'main' }))
 app.set('view engine', 'handlebars')
