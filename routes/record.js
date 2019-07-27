@@ -3,8 +3,10 @@ const router = express.Router()
 const db = require('../models')
 const Record = db.Record
 const User = db.User
-const { check, validationResult } = require('express-validator')
+const { validationResult } = require('express-validator')
+const { recordCheck } = require('../valid/valid')
 const { authenticated } = require('../config/auth.js')
+
 
 // 新支出頁面
 router.get('/new', authenticated, (req, res) => {
@@ -12,7 +14,10 @@ router.get('/new', authenticated, (req, res) => {
 })
 
 // 檢查 新支出
-router.post('/new', authenticated, (req, res) => {
+router.post('/new', authenticated, recordCheck, (req, res) => {
+  const errors = validationResult(req)
+  if (!errors.isEmpty()) throw new Error("The field must be fill out")
+
   Record.create({
     name: req.body.name,
     date: req.body.date,
@@ -26,6 +31,7 @@ router.post('/new', authenticated, (req, res) => {
 
 // 編輯頁面
 router.get('/:id/edit', authenticated, (req, res) => {
+
   User.findByPk(req.user.id)
   .then((user) => {
     if (!user) throw new Error("user not found")
@@ -36,11 +42,15 @@ router.get('/:id/edit', authenticated, (req, res) => {
       }
     })
   })
-  .then((record) => { return res.render('edit', { record: record }) })  
+  .then((record) => { return res.render('edit', { record: record }) }) 
+  .catch(err => res.status(422).json(err))
 })
 
 // 檢查 編輯
-router.put('/:id', authenticated, (req, res) => {
+router.put('/:id', authenticated, recordCheck, (req, res) => {
+  const errors = validationResult(req)
+  if (!errors.isEmpty()) throw new Error("The field must be fill out")
+  
   Record.findOne({
     where: {
       Id: req.params.id,

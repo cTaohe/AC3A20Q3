@@ -2,7 +2,6 @@ const express = require('express')
 const router = express.Router()
 const passport = require('passport')
 const db = require('../models')
-const Record = db.Record
 const User = db.User
 const bcrypt = require('bcryptjs')
 
@@ -33,7 +32,7 @@ router.post('/register', (req, res) => {
     errors.push({ message: '信箱、密碼為必要資訊'})
   }
   if (password !== password2) {
-    errprs.push({ message: '密碼不一致'})
+    errors.push({ message: '密碼不一致'})
   }
   if (errors.length > 0) {
     res.render('register', {
@@ -46,7 +45,9 @@ router.post('/register', (req, res) => {
   } else {
     User.findOne({ where: {email: email}}).then(user => {
       if (user) {
-        res.renger('register', {
+        errors.push({ message: '信箱已經註冊'})
+        res.render('register', {
+          errors,
           name,
           email,
           password,

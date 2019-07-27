@@ -12,40 +12,22 @@ const Op = sequelize.Op
 router.get('/', authenticated, (req, res) => {
   const month = req.query.months || ''
   const category = req.query.categorys || ''
-  let filter = {}
 
-  if (month === '' && category === '') {
-    filter = {
-      UserId: req.user.id
-    }
-  } else if (month === '') {
-    filter = {
-      UserId: req.user.id,
-      category: category
-    }
-  } else if (category === '') {
-    filter = {
-      UserId: req.user.id,
-      [Op.and]: [
-        sequelize.where(sequelize.fn('MONTH', sequelize.col('date')), parseInt(month))
-      ]
-    }
-  } else {
-    filter = {
-      UserId: req.user.id,
-      category: category,
-      [Op.and]: [
-        sequelize.where(sequelize.fn('MONTH', sequelize.col('date')), parseInt(month))
-      ]
-    }
-  }
+  let filtermonth = (month === '') ? 
+    {} : 
+    {date: {[Op.and]: [sequelize.where(sequelize.fn('MONTH', sequelize.col('date')), parseInt(month))]}}
+  let filtercategory = (category === '') ? {} : {category: category}
 
   User.findByPk(req.user.id)
   .then(user => {
     if (!user) throw new Error('user not found')
 
     return Record.findAll({
-      where: filter
+      where: {
+        UserId: req.user.id,
+        ...filtermonth,
+        ...filtercategory
+      }
     })
   })
   .then(records => {
