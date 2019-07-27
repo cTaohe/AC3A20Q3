@@ -18,6 +18,9 @@
 <body>
   <nav class="navbar navbar-light bg-light">
     <a href="/" class="navbar-brand">家庭記帳本</a>
+    {{#if userName}}
+    <h4 class="text-info">歡迎回來!! {{userName}}</h4>
+    {{/if}}
     <div class="navbar-right">
       {{#if isAuthenticated}}
         <a href="/users/logout" class="btn btn-outline-info">LOGOUT</a>

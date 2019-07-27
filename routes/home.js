@@ -12,7 +12,7 @@ const Op = sequelize.Op
 router.get('/', authenticated, (req, res) => {
   const month = req.query.months || ''
   const category = req.query.categorys || ''
-
+  const userName = req.user.name
   let filtermonth = (month === '') ? 
     {} : 
     {date: {[Op.and]: [sequelize.where(sequelize.fn('MONTH', sequelize.col('date')), parseInt(month))]}}
@@ -33,7 +33,7 @@ router.get('/', authenticated, (req, res) => {
   .then(records => {
     
     let totalAmount = records.map(record => record.amount).reduce((accumulator, currentValue) => accumulator + currentValue, 0)
-    return res.render('index',{records, months, month, categorys, category, totalAmount})
+    return res.render('index',{userName, records, months, month, categorys, category, totalAmount})
   })
   .catch(err => { return res.status(422).json(err) })
 })
