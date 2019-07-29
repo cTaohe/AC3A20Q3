@@ -4,7 +4,7 @@ const passport = require('passport')
 const db = require('../models')
 const User = db.User
 const bcrypt = require('bcryptjs')
-
+const { salt } = require('../valid/salt')
 // 登入頁面
 router.get('/login', (req, res) => {
   res.render('login')
@@ -12,10 +12,24 @@ router.get('/login', (req, res) => {
 
 // 登入檢查
 router.post('/login', (req, res, next) => {
-  passport.authenticate('local', {
-    successRedirect: '/',
-    failureRedirect: '/users/login'
-  })(req, res, next)
+  const { email, password } = req.body
+  let errors = []
+  if (!email || !password) {
+    errors.push({ message: '信箱、密碼為必要資訊' })
+  }
+  if (errors.length > 0) {
+    res.render('login', {
+      errors,
+      email,
+      password
+    })
+  } else {
+    passport.authenticate('local', {
+      successRedirect: '/',
+      failureRedirect: '/users/login',
+      failureFlash: req.flash('warning_msg', '登入失敗')
+    })(req, res, next)
+  }
 })
 
 // 註冊頁面
@@ -25,14 +39,14 @@ router.get('/register', (req, res) => {
 
 // 註冊檢查
 router.post('/register', (req, res) => {
-  const { name, email, password, password2} = req.body
+  const { name, email, password, password2 } = req.body
   let errors = []
-  
+
   if (!email || !password || !password2) {
-    errors.push({ message: '信箱、密碼為必要資訊'})
+    errors.push({ message: '信箱、密碼為必要資訊' })
   }
   if (password !== password2) {
-    errors.push({ message: '密碼不一致'})
+    errors.push({ message: '密碼不一致' })
   }
   if (errors.length > 0) {
     res.render('register', {
@@ -43,9 +57,9 @@ router.post('/register', (req, res) => {
       password2
     })
   } else {
-    User.findOne({ where: {email: email}}).then(user => {
+    User.findOne({ where: { email: email } }).then(user => {
       if (user) {
-        errors.push({ message: '信箱已經註冊'})
+        errors.push({ message: '信箱已經註冊' })
         res.render('register', {
           errors,
           name,
@@ -59,15 +73,12 @@ router.post('/register', (req, res) => {
           email,
           password
         })
-        bcrypt.genSalt(10, (err, salt) => {
-          bcrypt.hash(newUser.password, salt, (err, hash) => {
-            if (err) throw err
-            newUser.password = hash
-            newUser.save().then(user => {
-              res.redirect('/')
-            })
-            .catch(err => console.log(err))
-          })
+        const saltPassword = salt(newUser.password)
+        saltPassword.then((password) => {
+          newUser.password = password
+          newUser.save().then(user => {
+            res.redirect('/')
+          }).catch(err => { console.log(err)})
         })
       }
     })

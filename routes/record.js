@@ -17,7 +17,7 @@ router.get('/new', authenticated, (req, res) => {
 router.post('/new', authenticated, recordCheck, (req, res) => {
   const errors = validationResult(req)
   if (!errors.isEmpty()) throw new Error("The field must be fill out")
-
+  
   Record.create({
     name: req.body.name,
     date: req.body.date,

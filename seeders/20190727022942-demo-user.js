@@ -1,38 +1,34 @@
 'use strict';
-
-const bcrypt = require('bcryptjs')
-const user = {
-  name: '廣志',
-  email: 'user1@example.com',
-  password: '12345678'
-}
-
-const useBcrypt = new Promise((resolve, reject) => {
-  bcrypt.genSalt(10, (err, salt) => {
-    if (salt) return resolve(salt)
-    return reject(err)
-  })
-})
-
-const saltPassword = salt => {
-  return new Promise( (resolve, reject) => {
-    bcrypt.hash(user.password, salt, (err, hash) => {
-      if (hash) return resolve(hash)
-      return reject(err)
-    })
-  })
-}
+const { salt } = require('../valid/salt')
+const users = [{
+    name: '廣志',
+    email: 'user1@example.com',
+    password: '12345678'
+  },{
+    name: '美牙',
+    email: 'user2@example.com',
+    password: '12345678'
+  }
+]
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    const salt = await useBcrypt
-    const password = await saltPassword(salt)
-
+    let handledate = []
+    for (let user of users){
+      const saltPassword = await salt(user.password)
+      handledate.push(saltPassword)
+    }
     return queryInterface.bulkInsert('Users', [
       {
-        name: user.name,
-        email: user.email,
-        password: password,
+        name: users[0].name,
+        email: users[0].email,
+        password: handledate[0],
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },{
+        name: users[1].name,
+        email: users[1].email,
+        password: handledate[1],
         createdAt: new Date(),
         updatedAt: new Date()
       }
